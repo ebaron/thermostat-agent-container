@@ -22,7 +22,8 @@ the Docker run command.
 |  `THERMOSTAT_<plugin>_URL`    | The URL for the `<plugin>` microservice provided by the web gateway     |
 |  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as |
 
-Substitute `<plugin>` for the following: `VM_GC`, `VM_MEMORY`, `HOST_OVERVIEW`, `HOST_CPU`, `HOST_MEMORY`, `COMMANDS`
+Substitute `<plugin>` for the following:
+`JVM_OVERVIEW`, `VM_GC`, `VM_MEMORY`, `HOST_OVERVIEW`, `HOST_CPU`, `HOST_MEMORY`, `HOST_NETWORK`, `COMMANDS`
 
 Usage
 ---------------------------------

@@ -296,6 +296,10 @@
                                         "value": "${AGENT_PASSWORD}"
                                     },
                                     {
+                                        "name": "THERMOSTAT_JVM_OVERVIEW_URL",
+                                        "value": "${JVM_OVERVIEW_URL}"
+                                    },
+                                    {
                                         "name": "THERMOSTAT_VM_GC_URL",
                                         "value": "${VM_GC_URL}"
                                     },
@@ -314,6 +318,10 @@
                                     {
                                         "name": "THERMOSTAT_HOST_MEMORY_URL",
                                         "value": "${HOST_MEMORY_URL}"
+                                    },
+                                    {
+                                        "name": "THERMOSTAT_HOST_NETWORK_URL",
+                                        "value": "${HOST_NETWORK_URL}"
                                     },
                                     {
                                         "name": "THERMOSTAT_COMMANDS_URL",
@@ -375,6 +383,13 @@
             "value": "agent-pwd"
         },
         {
+            "name": "JVM_OVERVIEW_URL",
+            "displayName": "\"jvms\" microservice URL",
+            "description": "URL to the \"jvms\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/jvms/0.0.1"
+        },
+        {
             "name": "VM_GC_URL",
             "displayName": "\"jvm-gc\" microservice URL",
             "description": "URL to the \"jvm-gc\" microservice provided by the Thermostat web gateway",
@@ -408,6 +423,13 @@
             "description": "URL to the \"system-memory\" microservice provided by the Thermostat web gateway",
             "required": true,
             "value": "http://example.com:30000/system-memory/0.0.1"
+        },
+        {
+            "name": "HOST_NETWORK_URL",
+            "displayName": "\"system-network\" microservice URL",
+            "description": "URL to the \"system-network\" microservice provided by the Thermostat web gateway",
+            "required": true,
+            "value": "http://example.com:30000/system-network/0.0.1"
         },
         {
             "name": "COMMANDS_URL",
