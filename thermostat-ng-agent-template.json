@@ -158,7 +158,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/ebaron/thermostat-agent-container"
+                        "uri": "https://github.com/thermostat-project/thermostat-agent-container"
                     }
                 },
                 "strategy": {
@@ -201,7 +201,7 @@
                 "source": {
                     "type": "Git",
                     "git": {
-                        "uri": "https://github.com/ebaron/thermostat-ng-agent.git"
+                        "uri": "https://github.com/thermostat-project/thermostat-ng-agent.git"
                     }
                 },
                 "strategy": {

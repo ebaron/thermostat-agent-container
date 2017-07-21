@@ -2,16 +2,16 @@ Thermostat Agent Builder Docker image
 =============================
 
 This repository contains Dockerfiles for a Thermostat Agent Builder image, which in turn
-can be used to build a Thermostat Agent base image, call this image `icedtea/thermostat-ng-agent-centos7`.
+can be used to build a Thermostat Agent base image, call this image `thermostat-project/thermostat-ng-agent`.
 
 That image, in turn, can be used for Java application images or builder images to be based on it.
-By basing your image on `icedtea/thermostat-ng-agent-centos7`, a Thermostat agent can get enabled on demand in
+By basing your image on `thermostat-project/thermostat-ng-agent`, a Thermostat agent can get enabled on demand in
 order to monitor your Java app.
 
 Environment variables
 ---------------------------------
 
-The thermostat/thermostat-ng-agent image recognizes the following environment
+The thermostat-project/thermostat-ng-agent image recognizes the following environment
 variables that you can set during initialization by passing `-e VAR=VALUE` to
 the Docker run command.
 
@@ -33,16 +33,16 @@ First you will need the base image that this image uses. You will need to clone 
     $ cd openjdk-8-maven-docker
     $ sudo docker build -t openjdk-8-64bit-maven .
 
-Once the base image is built, you need to build this image, let's call it `icedtea/thermostat-ng-agent-builder-centos7`:
+Once the base image is built, you need to build this image, let's call it `thermostat-project/thermostat-ng-agent-builder`:
 
-    $ sudo docker build -t icedtea/thermostat-ng-agent-builder-centos7 .
+    $ sudo docker build -t thermostat-project/thermostat-ng-agent-builder .
 
-Next, build a Thermostat Agent version into `icedtea/thermostat-ng-agent-centos7` using the builder
+Next, build a Thermostat Agent version into `thermostat-project/thermostat-ng-agent` using the builder
 image:
 
-    $ sudo s2i build https://github.com/ebaron/thermostat-ng-agent icedtea/thermostat-ng-agent-builder-centos7 icedtea/thermostat-ng-agent-centos7
+    $ sudo s2i build https://github.com/thermostat-project/thermostat-ng-agent thermostat-project/thermostat-ng-agent-builder thermostat-project/thermostat-ng-agent
 
-Then, image `icedtea/thermostat-ng-agent-centos7` is intended to be used as a base image for builder/runtime images in your
+Then, image `thermostat-project/thermostat-ng-agent` is intended to be used as a base image for builder/runtime images in your
 Dockerfile via:
 
-    FROM icedtea/thermostat-ng-agent-centos7
+    FROM thermostat-project/thermostat-ng-agent
