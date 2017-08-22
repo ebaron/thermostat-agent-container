@@ -1,4 +1,4 @@
-FROM openjdk-8-64bit-maven
+FROM icedtea/openjdk-8-64bit-maven
 
 # Thermostat Agent Builder Image.
 # See README.md for environment variables required at runtime.
