@@ -39,6 +39,7 @@ function configure_tls {
         return 1
     fi
 
+    # Set TLS configuration in ssl.properties
     change_config "${ssl_props_file}" "KEYSTORE_FILE" "${jks_keystore}"
     if [ $? -ne 0 ]; then
         echo "Setting KEYSTORE_FILE property failed" >&2
@@ -49,7 +50,11 @@ function configure_tls {
         echo "Setting KEYSTORE_PASSWORD property failed" >&2
         return 1
     fi
-    change_config "${ssl_props_file}" "DISABLE_HOSTNAME_VERIFICATION" "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION:=false}"
+    if [ "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION:=false}" != "true" -a "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}" != "false" ]; then
+        echo "Invalid boolean value for THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION: ${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}" >&2
+        return 1
+    fi
+    change_config "${ssl_props_file}" "DISABLE_HOSTNAME_VERIFICATION" "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}"
     if [ $? -ne 0 ]; then
         echo "Setting DISABLE_HOSTNAME_VERIFICATION property failed" >&2
         return 1

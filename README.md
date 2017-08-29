@@ -31,20 +31,14 @@ Substitute `<plugin>` for the following:
 
 Usage
 ---------------------------------
-First you will need the base image that this image uses. You will need to clone and build it yourself at this time:
-
-    $ git clone https://github.com/thermostat-project/openjdk-8-maven-docker.git
-    $ cd openjdk-8-maven-docker
-    $ sudo docker build -t icedtea/openjdk-8-64bit-maven .
-
-Once the base image is built, you need to build this image, let's call it `icedtea/thermostat-agent-builder`:
+First, you need to build this image, let's call it `icedtea/thermostat-agent-builder`:
 
     $ sudo docker build -t icedtea/thermostat-agent-builder .
 
 Next, build a Thermostat Agent version into `icedtea/thermostat-ng-agent` using the builder
 image:
 
-    $ sudo s2i build https://github.com/thermostat-project/thermostat-ng-agent icedtea/thermostat-agent-builder icedtea/thermostat-ng-agent
+    $ sudo s2i build http://icedtea.classpath.org/mirror/git/thermostat-ng-agent icedtea/thermostat-agent-builder icedtea/thermostat-ng-agent
 
 Then, image `icedtea/thermostat-ng-agent` is intended to be used as a base image for builder/runtime images in your
 Dockerfile via:
