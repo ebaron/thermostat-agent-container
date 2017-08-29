@@ -20,7 +20,11 @@ the Docker run command.
 |  `THERMOSTAT_AGENT_USERNAME`  | User name for the Thermostat agent to use connecting to the web gateway |
 |  `THERMOSTAT_AGENT_PASSWORD`  | Password for connecting to the web gateway          |
 |  `THERMOSTAT_<plugin>_URL`    | The URL for the `<plugin>` microservice provided by the web gateway     |
-|  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as |
+|  `THERMOSTAT_TLS`             | Whether to encrypt communication with the web gateway using TLS (default value: "true") |
+|  `THERMOSTAT_TLS_CERT_FILE`   | Location of trusted certificate file used for TLS communication (required if `THERMOSTAT_TLS` is enabled) |
+|  `THERMOSTAT_KEYSTORE_PASS`   | Password to use for the keystore containing the certificate specified in `THERMOSTAT_TLS_CERT_FILE` (required if `THERMOSTAT_TLS` is enabled) |
+|  `THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION` | Whether host name checking should be disabled during TLS handshakes (default value: "false") |
+|  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as (default value: "default") |
 
 Substitute `<plugin>` for the following:
 `JVM_OVERVIEW`, `VM_GC`, `VM_MEMORY`, `HOST_OVERVIEW`, `HOST_CPU`, `HOST_MEMORY`, `HOST_NETWORK`, `COMMANDS`
@@ -46,3 +50,8 @@ Then, image `icedtea/thermostat-ng-agent` is intended to be used as a base image
 Dockerfile via:
 
     FROM icedtea/thermostat-ng-agent
+
+When securing communication with the web gateway using TLS, a trusted certificate for the web gateway must be provided as a file in the container.
+This can be done by mounting the certificate as a volume in your `docker run` command:
+
+    $ docker run -e THERMOSTAT_TLS_CERT_FILE="/path/in/container/gateway.crt" -v /local/machine/path/gateway.crt:/path/in/container/gateway.crt:ro,Z [...]

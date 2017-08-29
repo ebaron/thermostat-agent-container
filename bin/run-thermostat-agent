@@ -17,6 +17,13 @@ if [ "${THERMOSTAT_AGENT_PASSWORD}_" == "_" ]; then
    exit 1
 fi
 
+# Configure TLS for web gateway communication if requested
+. "/usr/bin/configure-tls"
+if [ $? -ne 0 ]; then
+    echo "Could not source TLS configuration script" >&2
+    exit 1
+fi
+
 plugins="jvm-overview vm-gc vm-memory host-overview host-cpu host-memory host-network commands"
 for plugin in ${plugins}; do
   prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties

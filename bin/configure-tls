@@ -1,0 +1,87 @@
+#!/bin/bash
+
+function change_config {
+    local config_file="$1"
+    local key="$2"
+    local value="$3"
+
+    # Replace value in config file with argument
+    sed -i "s|^#*${key}=.*|${key}=${value}|g" "${config_file}"
+    if [ $? -ne 0 ]; then
+        echo "Failed to update config file ${config_file}" >&2
+        return 1
+    fi
+
+    # Verify replacement occurred
+    local count=$(grep -c "^${key}=${value}" "${config_file}")
+    if [ $count -ne 1 ]; then
+        echo "Configuration file does not contain updated value: ${config_file}" >&2
+        return 1
+    fi
+}
+
+function configure_tls {
+    if [ ! -f "${THERMOSTAT_TLS_CERT_FILE}" ]; then
+        echo "THERMOSTAT_TLS_CERT_FILE either not specified or is not a regular file" >&2
+        return 1
+    fi
+    local keytool_min_pass_len="6"
+    if [ $(echo -n "${THERMOSTAT_KEYSTORE_PASS}" | wc -c) -lt "${keytool_min_pass_len}" ]; then
+        echo "THERMOSTAT_KEYSTORE_PASS either not specified or shorter than ${keytool_min_pass_len} characters" >&2
+        return 1
+    fi
+
+    local config_dir="${THERMOSTAT_HOME}/etc"
+    local ssl_props_file="${THERMOSTAT_HOME}/etc/ssl.properties"
+    local jks_keystore="${THERMOSTAT_HOME}/thermostat.jks"
+    if [ ! -f "${ssl_props_file}" ]; then
+        echo "SSL configuration file is missing at: ${ssl_props_file}" >&2
+        return 1
+    fi
+
+    change_config "${ssl_props_file}" "KEYSTORE_FILE" "${jks_keystore}"
+    if [ $? -ne 0 ]; then
+        echo "Setting KEYSTORE_FILE property failed" >&2
+        return 1
+    fi
+    change_config "${ssl_props_file}" "KEYSTORE_PASSWORD" "${THERMOSTAT_KEYSTORE_PASS}"
+    if [ $? -ne 0 ]; then
+        echo "Setting KEYSTORE_PASSWORD property failed" >&2
+        return 1
+    fi
+    change_config "${ssl_props_file}" "DISABLE_HOSTNAME_VERIFICATION" "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION:=false}"
+    if [ $? -ne 0 ]; then
+        echo "Setting DISABLE_HOSTNAME_VERIFICATION property failed" >&2
+        return 1
+    fi
+
+    # Remove default keystore
+    rm -f "${jks_keystore}"
+
+    # Import certificate into a new JKS keystore using keytool
+    local input_text="${THERMOSTAT_KEYSTORE_PASS}\n${THERMOSTAT_KEYSTORE_PASS}\nyes\n"
+    keytool_output=$(echo -e "${input_text}" | keytool -importcert -file ${THERMOSTAT_TLS_CERT_FILE} -keystore "${jks_keystore}" -alias thermostat 2>&1)
+    if [ $? -ne 0 ]; then
+        echo "Failed to create JKS keystore with trusted certificate" >&2
+        return 1
+    fi
+
+    # Verify that keystore was created
+    if [ ! -f "${jks_keystore}" ]; then
+        echo "Failed to create JKS keystore using keytool, keytool's output follows:" >&2
+        echo "${keytool_output}" >&2
+        return 1
+    fi
+}
+
+if [ "${THERMOSTAT_TLS:=true}" != "true" ]; then
+    echo "Not configuring TLS for agent"
+else
+    echo "Configuring TLS for agent"
+    configure_tls
+    if [ $? -ne 0 ]; then
+        echo "Failed to configure TLS" >&2
+        exit 1
+    fi
+fi
+
