@@ -1,26 +1,13 @@
 #!/bin/bash
 
-function change_config {
-    local config_file="$1"
-    local key="$2"
-    local value="$3"
-
-    # Replace value in config file with argument
-    sed -i "s|^#*${key}=.*|${key}=${value}|g" "${config_file}"
-    if [ $? -ne 0 ]; then
-        echo "Failed to update config file ${config_file}" >&2
-        return 1
-    fi
-
-    # Verify replacement occurred
-    local count=$(grep -c "^${key}=${value}" "${config_file}")
-    if [ $count -ne 1 ]; then
-        echo "Configuration file does not contain updated value: ${config_file}" >&2
-        return 1
-    fi
-}
-
 function configure_tls {
+    # Source java properties utility functions
+    . "/usr/bin/java-properties-functions"
+    if [ $? -ne 0 ]; then
+        echo "Java properties file utilities script missing" >&2
+        return 1    
+    fi
+
     if [ ! -f "${THERMOSTAT_TLS_CERT_FILE}" ]; then
         echo "THERMOSTAT_TLS_CERT_FILE either not specified or is not a regular file" >&2
         return 1
@@ -40,12 +27,12 @@ function configure_tls {
     fi
 
     # Set TLS configuration in ssl.properties
-    change_config "${ssl_props_file}" "KEYSTORE_FILE" "${jks_keystore}"
+    setProperty "${ssl_props_file}" "KEYSTORE_FILE" "${jks_keystore}"
     if [ $? -ne 0 ]; then
         echo "Setting KEYSTORE_FILE property failed" >&2
         return 1
     fi
-    change_config "${ssl_props_file}" "KEYSTORE_PASSWORD" "${THERMOSTAT_KEYSTORE_PASS}"
+    setProperty "${ssl_props_file}" "KEYSTORE_PASSWORD" "${THERMOSTAT_KEYSTORE_PASS}"
     if [ $? -ne 0 ]; then
         echo "Setting KEYSTORE_PASSWORD property failed" >&2
         return 1
@@ -54,7 +41,7 @@ function configure_tls {
         echo "Invalid boolean value for THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION: ${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}" >&2
         return 1
     fi
-    change_config "${ssl_props_file}" "DISABLE_HOSTNAME_VERIFICATION" "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}"
+    setProperty "${ssl_props_file}" "DISABLE_HOSTNAME_VERIFICATION" "${THERMOSTAT_DISABLE_HOSTNAME_VERIFICATION}"
     if [ $? -ne 0 ]; then
         echo "Setting DISABLE_HOSTNAME_VERIFICATION property failed" >&2
         return 1

@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# escape string so that characters with special meaning in sed regexp are escaped
+# see: https://stackoverflow.com/a/2705678
+function escapeSedRegex {
+    local string="${1}"
+
+    # escape \ . * [ ^ $ characters
+    printf '%s' "${string}" \
+    | sed -e 's/[]\/$*.^|[]/\\&/g'
+}
+
+# escape string so that characters with special meaning to sed replacement are escaped
+# see: https://stackoverflow.com/a/2705678
+function escapeSedReplace {
+    local string="${1}"
+
+    printf '%s' "${string}" \
+    | sed -e 's/[\/&]/\\&/g'
+}
+
+# escape string so it can be used as key/value in properties file
+# https://en.wikipedia.org/wiki/.properties
+function escapeStringProperties {
+    local string="${1}"
+
+    printf '%s' "${string}" \
+    | sed 's/\\/\\\\/g' \
+    | sed 's/^\([[:space:]]\)/\\\1/g' \
+    | sed 's/#/\\#/g' \
+    | sed 's/!/\\!/g' \
+    | sed 's/=/\\=/g' \
+    | sed 's/:/\\:/g'
+}
+
+# verify that a property was set to a given value in the properties file
+function verifyProperty {
+    local file="${1}"
+    local property="${2}"
+    local value="${3}"
+
+    local result=$(sed -ne "/^$(escapeSedRegex "$(escapeStringProperties "${property}")=$(escapeStringProperties "${value}")")$/p" "${file}")
+    if [ -z "${result}" ]; then
+        echo "Property ${property} not correctly set in ${file}" >&2
+        return 1
+    fi
+    return 0
+}
+
+# sets (or adds) single property in properties file to desired value
+# ( expects .properties file to use: key = value or key=value format )
+function setProperty {
+    local file="${1}"
+    local property="${2}"
+    local value="${3}"
+
+    if cat "${file}" | grep -q "^#*[[:space:]]*$( escapeSedRegex "$( escapeStringProperties "${property}" )" )[[:space:]]*=.*\$" ; then
+        sed -i \
+        "s/^#*[[:space:]]*$( escapeSedRegex "$( escapeStringProperties "${property}" )" )[[:space:]]*=.*\$/$( escapeSedReplace "$( escapeStringProperties "${property}" )=$( escapeStringProperties "${value}" )" )/g" \
+        "${file}"
+    else
+        printf '%s\n' \
+        "$( escapeStringProperties "${property}" )=$( escapeStringProperties "${value}" )" \
+        >> "${file}"
+    fi
+
+    verifyProperty "${file}" "${property}" "${value}"
+    return $?
+}
