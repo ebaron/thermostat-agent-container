@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 # Optionally, launches the Thermostat agent
-# connecting to a pre-configured configured storage.
-# See the thermostat storage template doc for creating
-# such a storage endpoint:
-# https://github.com/jerboaa/thermostat-openshift
+# connecting to a pre-configured configured web gateway.
+# See the thermostat web gateway repository for creating
+# such an image:
+# https://github.com/thermostat-project/thermostat-web-gateway-builder
 
 required_vars="THERMOSTAT_AGENT_USERNAME \
     THERMOSTAT_AGENT_PASSWORD \
@@ -15,6 +15,7 @@ required_vars="THERMOSTAT_AGENT_USERNAME \
     THERMOSTAT_JVM_OVERVIEW_URL \
     THERMOSTAT_VM_GC_URL \
     THERMOSTAT_VM_MEMORY_URL \
+    THERMOSTAT_VM_IO_URL \
     THERMOSTAT_COMMANDS_URL"
 has_required_env=true
 for req_var in ${required_vars}; do
