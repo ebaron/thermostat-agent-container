@@ -5,7 +5,7 @@
 # This test image is based on:
 # https://github.com/openshift-s2i/s2i-wildfly folder 10.1
 
-FROM icedtea/thermostat-agent-centos7
+FROM icedtea/thermostat-agent-builder
 
 EXPOSE 8080
 
@@ -16,6 +16,9 @@ LABEL io.k8s.description="Platform for building and running JEE applications on 
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,wildfly,wildfly10" \
       io.openshift.s2i.destination="/opt/s2i/destination"
+
+# Tell base image about our S2I destination
+ENV THERMOSTAT_SOURCE_DIR="/opt/s2i/destination"
 
 USER root
 

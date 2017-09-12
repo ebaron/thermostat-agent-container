@@ -26,8 +26,16 @@ WORKDIR ${HOME}
 
 COPY ./thermostat-user-home-config ${USER_THERMOSTAT_HOME}
 
-# Install s2i build scripts
-COPY ./s2i/bin/ ${STI_SCRIPTS_PATH}
+# Install s2i build scripts without overwriting those from the base image
+COPY ./s2i/bin/ ${STI_SCRIPTS_PATH}/agent
+# Use Thermostat agent S2I scripts by default
+LABEL io.openshift.s2i.scripts-url="image://${STI_SCRIPTS_PATH}/agent"
+# Use an environment variable for S2I destination, which child images should
+# override if they wish to use a different destination
+ENV THERMOSTAT_SOURCE_DIR="/tmp"
+LABEL io.openshift.s2i.destination="${THERMOSTAT_SOURCE_DIR}"
+# Use a build directory specifically for the agent
+ENV THERMOSTAT_BUILD_DIR="${HOME}/thermostat-build"
 
 # Ensure any UID can read/write to files in /opt/app-root
 RUN chown -R ${APP_USER}:0 /opt/app-root && \
@@ -43,4 +51,4 @@ RUN rm -rf /tmp/hsperfdata_*
 USER 1001
 
 ENTRYPOINT [ "container-entrypoint" ]
-CMD [ "run-thermostat-agent" ]
+CMD [ "bash", "-c", "${STI_SCRIPTS_PATH}/agent/usage" ]

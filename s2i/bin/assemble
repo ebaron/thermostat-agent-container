@@ -1,7 +1,9 @@
 #!/bin/bash
 
 echo "---> Installing Thermostat Agent source ..."
-mv /tmp/src/* ./
+mkdir -p "${THERMOSTAT_BUILD_DIR}"
+pushd "${THERMOSTAT_BUILD_DIR}" >/dev/null
+mv "${THERMOSTAT_SOURCE_DIR}"/src/* ./
 
 echo "---> Building Thermostat Agent ..."
 mvn clean install
@@ -18,7 +20,8 @@ sed -i -e 's|com.redhat.thermostat.level=CONFIG|#com.redhat.thermostat.level=CON
 ln -s ${THERMOSTAT_HOME}/bin /opt/app-root/bin
 
 echo "---> Cleaning up sources ..."
-rm -rf ./*
+popd >/dev/null
+rm -rf "${THERMOSTAT_BUILD_DIR}"
 
 # Run thermostat --version in order to produce basic directory
 # structure. Then fix up permissions.
