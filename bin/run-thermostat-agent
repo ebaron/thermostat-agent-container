@@ -24,7 +24,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-plugins="jvm-overview vm-gc vm-memory vm-io host-overview host-cpu host-memory host-network commands"
+plugins="jvm-overview vm-gc vm-memory vm-io vm-byteman host-overview host-cpu host-memory host-network commands"
 for plugin in ${plugins}; do
   prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties
   if [ ! -e "${prop_file}" ]; then

@@ -16,6 +16,7 @@ required_vars="THERMOSTAT_AGENT_USERNAME \
     THERMOSTAT_VM_GC_URL \
     THERMOSTAT_VM_MEMORY_URL \
     THERMOSTAT_VM_IO_URL \
+    THERMOSTAT_VM_BYTEMAN_URL \
     THERMOSTAT_COMMANDS_URL"
 has_required_env=true
 for req_var in ${required_vars}; do
