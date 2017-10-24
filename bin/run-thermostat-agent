@@ -24,10 +24,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-plugins="jvm-overview vm-gc vm-memory vm-io vm-byteman host-overview host-cpu host-memory host-network commands"
+plugins="jvm-overview vm-cpu vm-gc vm-memory vm-io vm-classstat vm-compiler vm-byteman jcmd host-overview host-cpu host-memory host-network commands"
 for plugin in ${plugins}; do
-  prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/gateway.properties
-  if [ ! -e "${prop_file}" ]; then
+  prop_file=${THERMOSTAT_HOME}/etc/plugins.d/${plugin}/backend-config.properties
+  if [ ! -f "${prop_file}" ]; then
     echo 1>&2 "Properties file for ${plugin} is missing. This script is out-of-date!"
     exit 1
   fi
@@ -35,7 +35,7 @@ for plugin in ${plugins}; do
   if [ ! -d "${user_prop_dir}" ]; then
     mkdir -p "${user_prop_dir}"
   fi
-  user_prop_file="${user_prop_dir}"/gateway.properties
+  user_prop_file="${user_prop_dir}"/backend-config.properties
 
   # Derive config environment variable from plugin name
   url_var="THERMOSTAT_$(echo ${plugin} | tr '[:lower:]-' '[:upper:]_')_URL"

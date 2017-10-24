@@ -27,7 +27,7 @@ the Docker run command.
 |  `APP_USER`                   | The application user the Java app Thermostat shall monitor runs as (default value: "default") |
 
 Substitute `<plugin>` for the following:
-`JVM_OVERVIEW`, `VM_GC`, `VM_MEMORY`, `VM_IO`, `VM_BYTEMAN`, `HOST_OVERVIEW`, `HOST_CPU`, `HOST_MEMORY`, `HOST_NETWORK`, `COMMANDS`
+`JVM_OVERVIEW`, `VM_CPU`, `VM_GC`, `VM_MEMORY`, `VM_IO`, `VM_CLASSSTAT`, `VM_COMPILER`, `VM_BYTEMAN`, `JCMD`, `HOST_OVERVIEW`, `HOST_CPU`, `HOST_MEMORY`, `HOST_NETWORK`, `COMMANDS`
 
 Usage
 ---------------------------------
