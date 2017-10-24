@@ -21,7 +21,7 @@ ln -s ${THERMOSTAT_HOME}/bin /opt/app-root/bin
 
 echo "---> Cleaning up sources ..."
 popd >/dev/null
-rm -rf "${THERMOSTAT_BUILD_DIR}"
+rm -rf ./* ./.[!.]*
 
 # Run thermostat --version in order to produce basic directory
 # structure. Then fix up permissions.
